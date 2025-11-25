@@ -31,6 +31,7 @@ COPY --from=builder /app/pyproject.toml /app/poetry.lock /app/poetry.toml ./
 
 # Copy application code
 COPY src/ ./src/
+COPY tests/ ./tests/
 COPY knowledge/ ./knowledge/
 COPY alembic/ ./alembic/
 COPY alembic.ini ./

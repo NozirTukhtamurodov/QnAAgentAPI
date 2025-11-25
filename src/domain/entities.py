@@ -1,9 +1,16 @@
 """Domain entities representing core business objects."""
 
 from datetime import UTC, datetime
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
+
+if TYPE_CHECKING:
+    from infrastructure.models import (
+        ChatSessionModel,
+        ConversationSummaryModel,
+        MessageModel,
+    )
 
 
 class Message(BaseModel):
@@ -17,6 +24,17 @@ class Message(BaseModel):
     content: str
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
+    @classmethod
+    def from_model(cls, model: "MessageModel") -> "Message":
+        """Create entity from database model."""
+        return cls(
+            id=model.id,
+            session_id=model.session_id,
+            role=model.role,  # type: ignore[arg-type]
+            content=model.content,
+            created_at=model.created_at,
+        )
+
 
 class ChatSession(BaseModel):
     """Represents a chat session."""
@@ -27,6 +45,16 @@ class ChatSession(BaseModel):
     name: str
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+
+    @classmethod
+    def from_model(cls, model: "ChatSessionModel") -> "ChatSession":
+        """Create entity from database model."""
+        return cls(
+            id=model.id,
+            name=model.name,
+            created_at=model.created_at,
+            updated_at=model.updated_at,
+        )
 
 
 class ConversationSummary(BaseModel):
@@ -39,6 +67,17 @@ class ConversationSummary(BaseModel):
     message_count: int
     summary_text: str
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+
+    @classmethod
+    def from_model(cls, model: "ConversationSummaryModel") -> "ConversationSummary":
+        """Create entity from database model."""
+        return cls(
+            id=model.id,
+            session_id=model.session_id,
+            message_count=model.message_count,
+            summary_text=model.summary_text,
+            created_at=model.created_at,
+        )
 
 
 class KnowledgeItem(BaseModel):

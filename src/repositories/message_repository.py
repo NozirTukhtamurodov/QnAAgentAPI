@@ -1,7 +1,6 @@
 """Message repository for database operations on chat messages."""
 
 import logging
-from typing import Literal, cast
 
 from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -42,17 +41,11 @@ class MessageRepository:
             content=content,
         )
         session.add(db_message)
-        await session.flush()  # Flush to get ID and created_at
+        await session.flush()
         await session.refresh(db_message)
 
         logger.info(f"Created message {db_message.id} in session {session_id}")
-        return Message(
-            id=db_message.id,
-            session_id=db_message.session_id,
-            role=cast(Literal["user", "assistant"], db_message.role),
-            content=db_message.content,
-            created_at=db_message.created_at,
-        )
+        return Message.from_model(db_message)
 
     async def get_by_session(
         self,
@@ -82,16 +75,7 @@ class MessageRepository:
         result = await session.execute(stmt)
         db_messages = result.scalars().all()
 
-        messages = [
-            Message(
-                id=db_message.id,
-                session_id=db_message.session_id,
-                role=cast(Literal["user", "assistant"], db_message.role),
-                content=db_message.content,
-                created_at=db_message.created_at,
-            )
-            for db_message in db_messages
-        ]
+        messages = [Message.from_model(db_message) for db_message in db_messages]
 
         logger.info(f"Retrieved {len(messages)} messages for session {session_id}")
         return messages

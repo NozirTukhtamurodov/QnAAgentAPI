@@ -14,21 +14,13 @@ Production-ready Question & Answer Agent API powered by OpenAI GPT-4 with integr
 
 ## Prerequisites
 
-- Python 3.12+
-- Poetry (dependency management)
+- Docker Desktop
 - OpenAI API key
-- Docker Desktop (optional, for containerized deployment)
 - kubectl (optional, for Kubernetes deployment)
 
-## Quick Start (Local Development)
+## Quick Start
 
-### 1. Setup
-
-```bash
-make install
-```
-
-### 2. Configure Environment
+### 1. Configure Environment
 
 Create a `.env` file in the project root:
 
@@ -46,14 +38,7 @@ API_PORT=8000
 LOG_LEVEL=INFO
 ```
 
-### 3. Initialize Database
-
-```bash
-mkdir -p data knowledge
-make migrate-up
-```
-
-### 4. Add Knowledge Base (Optional)
+### 2. Add Knowledge Base (Optional)
 
 Place your knowledge base text files in the `knowledge/` directory. Example files are included:
 - `docker_basics.txt`
@@ -61,24 +46,27 @@ Place your knowledge base text files in the `knowledge/` directory. Example file
 - `openai_models.txt`
 - `python_basics.txt`
 
-### 5. Run the Application
+### 3. Run the Application
 
 ```bash
-make run
+make docker-build
+make docker-up
+make docker-migrate
 ```
 
 Access the API at:
 - API: http://localhost:8000
 - Docs: http://localhost:8000/docs
 
-## Docker Deployment
-
-### Using Docker Compose
+### View Logs
 
 ```bash
-make docker-up
 make docker-logs
-make docker-migrate
+```
+
+### Stop the Application
+
+```bash
 make docker-down
 ```
 
@@ -113,24 +101,14 @@ make k8s-delete
 ### Run Tests
 
 ```bash
-make test
-make test-cov
-```
-
-### Code Quality
-
-```bash
-make format
-make lint
-make type-check
+make docker-test
+make docker-test-cov
 ```
 
 ### Database Migrations
 
 ```bash
-make migrate-up
-make migrate-down
-make migrate-create MSG="add new table"
+make docker-migrate
 ```
 
 ## Architecture

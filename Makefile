@@ -1,26 +1,17 @@
-.PHONY: help install run test lint format clean docker-build docker-up docker-down migrate-up migrate-down migrate-create migrate-status migrate-history
+.PHONY: help install run test test-cov docker-test docker-test-cov lint format clean docker-build docker-up docker-down migrate-up migrate-down migrate-create migrate-status migrate-history
 
 # Default target
 help:
 	@echo "QnA Agent API - Available Commands"
 	@echo ""
 	@echo "Setup & Development:"
-	@echo "  make install          Install dependencies with Poetry"
-	@echo "  make run              Run the application in development mode"
-	@echo "  make test             Run tests with pytest"
-	@echo "  make test-cov         Run tests with coverage report"
+	@echo "  make docker-build     Build Docker image"
+	@echo "  make docker-up        Start application"
+	@echo "  make docker-test      Run tests"
+	@echo "  make docker-test-cov  Run tests with coverage"
 	@echo ""
-	@echo "Code Quality:"
-	@echo "  make lint             Run linting (ruff + mypy)"
-	@echo "  make format           Format code with black and ruff"
-	@echo "  make type-check       Run mypy type checking"
-	@echo ""
-	@echo "Database Migrations:"
-	@echo "  make migrate-up       Apply all pending migrations"
-	@echo "  make migrate-down     Rollback last migration"
-	@echo "  make migrate-status   Show current migration status"
-	@echo "  make migrate-history  Show migration history"
-	@echo "  make migrate-create MSG=\"description\"  Create new migration"
+	@echo "Database:"
+	@echo "  make docker-migrate   Run database migrations"
 	@echo ""
 	@echo "Docker:"
 	@echo "  make docker-build     Build Docker image"
@@ -57,6 +48,18 @@ test:
 
 test-cov:
 	poetry run pytest --cov=src --cov-report=html --cov-report=term
+
+docker-test:
+	@echo "Building Docker image if needed..."
+	@docker build -t qna-agent-api . > /dev/null 2>&1 || docker build -t qna-agent-api .
+	@echo "Running tests in Docker..."
+	docker-compose run --rm qna-agent-api sh -c "cd /app && poetry install --no-interaction --no-root --with dev && poetry run pytest"
+
+docker-test-cov:
+	@echo "Building Docker image if needed..."
+	@docker build -t qna-agent-api . > /dev/null 2>&1 || docker build -t qna-agent-api .
+	@echo "Running tests with coverage in Docker..."
+	docker-compose run --rm qna-agent-api sh -c "cd /app && poetry install --no-interaction --no-root --with dev && poetry run pytest --cov=src --cov-report=html --cov-report=term"
 
 # Code Quality
 lint:

@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Production-ready QnA Agent API with OpenAI and knowledge base"
 authors = ["Evrone <dev@evrone.com>"]
 readme = "README.md"
-packages = [{include = "*", from = "src"}]
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.12"

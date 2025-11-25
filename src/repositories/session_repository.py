@@ -33,16 +33,11 @@ class SessionRepository:
         """
         db_session = ChatSessionModel(id=session_id, name=name)
         session.add(db_session)
-        await session.flush()  # Flush to get created_at/updated_at values
+        await session.flush()
         await session.refresh(db_session)
 
         logger.info(f"Created chat session: {session_id} with name: {name}")
-        return ChatSession(
-            id=db_session.id,
-            name=db_session.name,
-            created_at=db_session.created_at,
-            updated_at=db_session.updated_at,
-        )
+        return ChatSession.from_model(db_session)
 
     async def get_by_id(
         self, session: AsyncSession, session_id: str
@@ -64,12 +59,7 @@ class SessionRepository:
             logger.warning(f"Session not found: {session_id}")
             return None
 
-        return ChatSession(
-            id=db_session.id,
-            name=db_session.name,
-            created_at=db_session.created_at,
-            updated_at=db_session.updated_at,
-        )
+        return ChatSession.from_model(db_session)
 
     async def list_all(
         self,
@@ -96,15 +86,7 @@ class SessionRepository:
         result = await session.execute(stmt)
         db_sessions = result.scalars().all()
 
-        sessions = [
-            ChatSession(
-                id=db_session.id,
-                name=db_session.name,
-                created_at=db_session.created_at,
-                updated_at=db_session.updated_at,
-            )
-            for db_session in db_sessions
-        ]
+        sessions = [ChatSession.from_model(db_session) for db_session in db_sessions]
 
         logger.info(f"Listed {len(sessions)} sessions")
         return sessions
@@ -171,12 +153,7 @@ class SessionRepository:
             return None
 
         logger.info(f"Updated session {session_id} with name: {name}")
-        return ChatSession(
-            id=db_session.id,
-            name=db_session.name,
-            created_at=db_session.created_at,
-            updated_at=db_session.updated_at,
-        )
+        return ChatSession.from_model(db_session)
 
     async def update_timestamp(self, session: AsyncSession, session_id: str) -> None:
         """Update the session's updated_at timestamp.

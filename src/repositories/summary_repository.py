@@ -43,13 +43,7 @@ class SummaryRepository:
         if not db_summary:
             return None
 
-        return ConversationSummary(
-            id=db_summary.id,
-            session_id=db_summary.session_id,
-            message_count=db_summary.message_count,
-            summary_text=db_summary.summary_text,
-            created_at=db_summary.created_at,
-        )
+        return ConversationSummary.from_model(db_summary)
 
     async def upsert(
         self,
@@ -105,10 +99,4 @@ class SummaryRepository:
                 f"Created summary for session {session_id} ({message_count} messages)"
             )
 
-        return ConversationSummary(
-            id=db_summary.id,
-            session_id=db_summary.session_id,
-            message_count=db_summary.message_count,
-            summary_text=db_summary.summary_text,
-            created_at=db_summary.created_at,
-        )
+        return ConversationSummary.from_model(db_summary)
