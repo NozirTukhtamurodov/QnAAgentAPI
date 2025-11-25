@@ -279,6 +279,19 @@ make migrate-history
 4. **Repository Layer** (`src/repositories/`): Database operations
 5. **Infrastructure Layer** (`src/infrastructure/`): External integrations
 
+### Why the Logic Layer?
+
+The `logic/` folder is intentionally organized by business domains (chat, sessions, common) rather than technical concerns. This design choice enables easy transition to a microservices architecture:
+
+- **Clear Domain Boundaries**: Each subfolder (`chat/`, `sessions/`) represents a potential microservice
+- **Independent Deployment**: Business logic is self-contained and can be extracted with minimal refactoring
+- **Service Separation**: When scaling demands arise, you can split:
+  - `logic/chat/` → Chat Service (handles LLM interactions and knowledge base queries)
+  - `logic/sessions/` → Session Service (manages user sessions and conversation history)
+  - `logic/common/` → Shared libraries or separate utility services
+
+This structure reduces coupling and makes horizontal scaling straightforward when your application grows beyond a monolithic architecture.
+
 ### Key Components
 
 - **Chat Service**: Orchestrates LLM interactions with knowledge base search

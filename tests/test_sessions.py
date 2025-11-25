@@ -15,13 +15,12 @@ async def test_create_session(client: AsyncClient):
     assert "created_at" in data
     assert "updated_at" in data
     assert isinstance(data["id"], str)
-    assert len(data["id"]) == 36  # UUID format
+    assert len(data["id"]) == 36
 
 
 @pytest.mark.asyncio
 async def test_list_sessions(client: AsyncClient):
     """Test listing all sessions."""
-    # Create a few sessions first
     response1 = await client.post("/sessions", json={})
     response2 = await client.post("/sessions", json={})
 
@@ -41,11 +40,9 @@ async def test_list_sessions(client: AsyncClient):
 @pytest.mark.asyncio
 async def test_get_session(client: AsyncClient):
     """Test retrieving a specific session."""
-    # Create a session
     create_response = await client.post("/sessions", json={})
     session_id = create_response.json()["id"]
 
-    # Get the session
     response = await client.get(f"/sessions/{session_id}")
 
     assert response.status_code == 200
@@ -65,15 +62,12 @@ async def test_get_nonexistent_session(client: AsyncClient):
 @pytest.mark.asyncio
 async def test_delete_session(client: AsyncClient):
     """Test deleting a session."""
-    # Create a session
     create_response = await client.post("/sessions", json={})
     session_id = create_response.json()["id"]
 
-    # Delete the session
     delete_response = await client.delete(f"/sessions/{session_id}")
     assert delete_response.status_code == 204
 
-    # Verify it's gone
     get_response = await client.get(f"/sessions/{session_id}")
     assert get_response.status_code == 404
 
@@ -81,11 +75,9 @@ async def test_delete_session(client: AsyncClient):
 @pytest.mark.asyncio
 async def test_get_message_history_empty(client: AsyncClient):
     """Test getting message history for a new session."""
-    # Create a session
     create_response = await client.post("/sessions", json={})
     session_id = create_response.json()["id"]
 
-    # Get message history
     response = await client.get(f"/sessions/{session_id}/messages")
 
     assert response.status_code == 200
@@ -99,24 +91,19 @@ async def test_get_message_history_empty(client: AsyncClient):
 @pytest.mark.asyncio
 async def test_session_lifecycle(client: AsyncClient):
     """Test complete session lifecycle: create -> use -> delete."""
-    # 1. Create session
     create_response = await client.post("/sessions", json={})
     assert create_response.status_code == 201
     session_id = create_response.json()["id"]
 
-    # 2. Verify session exists
     get_response = await client.get(f"/sessions/{session_id}")
     assert get_response.status_code == 200
 
-    # 3. Check message history is empty
     history_response = await client.get(f"/sessions/{session_id}/messages")
     assert history_response.status_code == 200
     assert history_response.json()["total"] == 0
 
-    # 4. Delete session
     delete_response = await client.delete(f"/sessions/{session_id}")
     assert delete_response.status_code == 204
 
-    # 5. Verify session is gone
     get_after_delete = await client.get(f"/sessions/{session_id}")
     assert get_after_delete.status_code == 404

@@ -27,7 +27,6 @@ async def test_search_knowledge_base_fastapi(kb_service: KnowledgeBaseService):
     results = await kb_service.search("FastAPI framework")
 
     assert len(results) > 0
-    # Should find fastapi_framework.txt
     assert any("fastapi" in result.filename.lower() for result in results)
 
 
@@ -47,7 +46,6 @@ async def test_search_knowledge_base_relevance(kb_service: KnowledgeBaseService)
 
     assert len(results) > 0
     for result in results:
-        # relevance_score may be None or a float
         if result.relevance_score is not None:
             assert 0 <= result.relevance_score <= 1
 
@@ -57,7 +55,6 @@ async def test_search_knowledge_base_empty_query(kb_service: KnowledgeBaseServic
     """Test searching with empty query."""
     results = await kb_service.search("")
 
-    # Should return all files or no results
     assert isinstance(results, list)
 
 
@@ -66,9 +63,7 @@ async def test_search_knowledge_base_no_match(kb_service: KnowledgeBaseService):
     """Test searching for content that doesn't exist."""
     results = await kb_service.search("quantum entanglement superconductors xyz123")
 
-    # Should return low-relevance or empty results
     assert isinstance(results, list)
-    # Search returns results even for non-matching queries
     assert len(results) >= 0
 
 
@@ -81,7 +76,6 @@ async def test_knowledge_base_file_structure():
     assert os.path.exists(kb_dir)
     assert os.path.isdir(kb_dir)
 
-    # Check for expected files
     expected_files = [
         "python_basics.txt",
         "fastapi_framework.txt",
@@ -94,7 +88,6 @@ async def test_knowledge_base_file_structure():
         assert os.path.exists(filepath), f"Missing knowledge base file: {filename}"
         assert os.path.isfile(filepath)
 
-        # Check file is readable and not empty
         with open(filepath, "r") as f:
             content = f.read()
             assert len(content) > 0, f"Knowledge base file is empty: {filename}"
