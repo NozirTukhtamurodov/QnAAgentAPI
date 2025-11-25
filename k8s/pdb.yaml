@@ -1,0 +1,13 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: qna-agent-api-pdb
+  labels:
+    app: qna-agent-api
+    managed-by: kubectl
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: qna-agent-api
+  unhealthyPodEvictionPolicy: IfHealthyBudget

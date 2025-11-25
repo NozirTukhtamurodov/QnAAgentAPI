@@ -1,0 +1,26 @@
+services:
+  qna-agent-api:
+    image: qna-agent-api
+    container_name: qna-agent-api
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL:-https://api.openai.com/v1}
+      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4-turbo-preview}
+      - DATABASE_URL=sqlite+aiosqlite:///./data/qna_agent.db
+      - APP_HOST=0.0.0.0
+      - APP_PORT=8000
+      - APP_LOG_LEVEL=${APP_LOG_LEVEL:-INFO}
+      - KNOWLEDGE_BASE_DIR=./knowledge
+    command: sh -c "cd /app && poetry run uvicorn main:application --host 0.0.0.0 --port 8000"
+    volumes:
+      - ./data:/app/data
+      - ./knowledge:/app/knowledge:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s

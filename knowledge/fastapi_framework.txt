@@ -1,0 +1,32 @@
+FastAPI is a modern, fast (high-performance) web framework for building APIs with Python 3.7+ based on standard Python type hints.
+
+Key Features:
+- Very high performance, on par with NodeJS and Go
+- Fast to code: Increase development speed by 200-300%
+- Fewer bugs: Reduce human-induced errors by about 40%
+- Intuitive: Great editor support with auto-completion
+- Easy to use and learn with automatic interactive API documentation
+- Standards-based: Based on OpenAPI and JSON Schema
+
+FastAPI leverages:
+- Starlette for the web parts
+- Pydantic for the data validation using Python type hints
+- ASGI (Asynchronous Server Gateway Interface) for async support
+
+Basic FastAPI example:
+```python
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
+```
+
+FastAPI automatically generates:
+- Interactive API docs (Swagger UI) at /docs
+- Alternative API docs (ReDoc) at /redoc
+- OpenAPI schema at /openapi.json
+
+FastAPI supports dependency injection, background tasks, WebSockets, and much more out of the box.

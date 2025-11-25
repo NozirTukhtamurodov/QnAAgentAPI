@@ -1,0 +1,112 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: qna-agent-config
+  labels:
+    app: qna-agent-api
+    managed-by: kubectl
+data:
+  APP_HOST: "0.0.0.0"
+  APP_PORT: "8000"
+  OPENAI_BASE_URL: "https://api.openai.com/v1"
+  OPENAI_MODEL: "gpt-4o-mini"
+  DATABASE_URL: "sqlite+aiosqlite:////app/data/qna_agent.db"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: qna-agent-knowledge
+  labels:
+    app: qna-agent-api
+    managed-by: kubectl
+data:
+  python_basics.txt: |
+    Python is a high-level, interpreted programming language created by Guido van Rossum.
+    Released in 1991, Python emphasizes code readability and simplicity.
+    
+    Key Features:
+    - Easy to learn and use with clear, readable syntax
+    - Dynamically typed - no need to declare variable types
+    - Automatic memory management with garbage collection
+    - Extensive standard library ("batteries included")
+    - Cross-platform compatibility (Windows, macOS, Linux)
+    - Supports multiple programming paradigms (OOP, functional, procedural)
+    - Large ecosystem of third-party packages (PyPI)
+    
+    Common frameworks and libraries:
+    - Django, Flask - Web frameworks
+    - NumPy, Pandas - Data analysis
+    - TensorFlow, PyTorch - Machine learning
+    - FastAPI - Modern API framework
+    - Pytest - Testing framework
+  
+  fastapi_framework.txt: |
+    FastAPI is a modern, high-performance web framework for building APIs with Python 3.7+.
+    
+    Key Features:
+    - Fast performance comparable to NodeJS and Go
+    - Increases development speed by 200-300%
+    - Reduces bugs by 40% with type hints and validation
+    - Intuitive and easy to use with great editor support
+    - Automatic interactive API documentation (Swagger UI, ReDoc)
+    - Standards-based: OpenAPI and JSON Schema
+    
+    Built on:
+    - Starlette for web parts
+    - Pydantic for data validation
+    
+    Example:
+    ```python
+    from fastapi import FastAPI
+    
+    app = FastAPI()
+    
+    @app.get("/")
+    async def root():
+        return {"message": "Hello World"}
+    ```
+    
+    Features include: dependency injection, background tasks, WebSockets, and more.
+  
+  docker_basics.txt: |
+    Docker is a platform for developing, shipping, and running applications in containers.
+    
+    Key Concepts:
+    - Containers: Lightweight, isolated environments for applications
+    - Images: Templates for creating containers
+    - Dockerfile: Instructions for building images
+    - Docker Hub: Registry for sharing images
+    
+    Benefits:
+    - Consistent environments across development, testing, and production
+    - Isolation of applications and dependencies
+    - Efficient resource utilization
+    - Easy scaling and deployment
+    - Microservices architecture support
+    
+    Common commands:
+    - docker build: Create image from Dockerfile
+    - docker run: Create and start container
+    - docker ps: List running containers
+    - docker compose: Manage multi-container applications
+  
+  openai_models.txt: |
+    OpenAI provides various AI models for different use cases.
+    
+    GPT Models:
+    - GPT-4: Most capable model for complex tasks
+    - GPT-4 Turbo: Faster and more cost-effective GPT-4 variant
+    - GPT-3.5 Turbo: Fast and cost-effective for simpler tasks
+    
+    Features:
+    - Function/tool calling for integration with external systems
+    - JSON mode for structured outputs
+    - Vision capabilities (GPT-4 Vision)
+    - Code generation and analysis
+    
+    Use Cases:
+    - Chatbots and virtual assistants
+    - Content generation
+    - Code completion and debugging
+    - Data analysis and summarization
+    - Language translation

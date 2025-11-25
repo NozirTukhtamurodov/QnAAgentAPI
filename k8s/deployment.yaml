@@ -1,0 +1,144 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qna-agent-api
+  labels:
+    app: qna-agent-api
+    version: v1
+    managed-by: kubectl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qna-agent-api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: qna-agent-api
+        version: v1
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/metrics"
+    spec:
+      securityContext:
+        runAsNonRoot: false
+        fsGroup: 0
+      
+      containers:
+      - name: qna-agent-api
+        image: qna-agent-api:latest
+        imagePullPolicy: IfNotPresent
+        command: ["poetry", "run", "uvicorn", "main:application", "--host", "0.0.0.0", "--port", "8000"]
+        
+        ports:
+        - name: http
+          containerPort: 8000
+          protocol: TCP
+        
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: false
+          capabilities:
+            drop:
+            - ALL
+        
+        env:
+        - name: APP_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: qna-agent-config
+              key: APP_HOST
+        - name: APP_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: qna-agent-config
+              key: APP_PORT
+        - name: OPENAI_BASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: qna-agent-config
+              key: OPENAI_BASE_URL
+        - name: OPENAI_MODEL
+          valueFrom:
+            configMapKeyRef:
+              name: qna-agent-config
+              key: OPENAI_MODEL
+        - name: DATABASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: qna-agent-config
+              key: DATABASE_URL
+        
+        # Sensitive data from Secrets
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: qna-agent-secrets
+              key: openai-api-key
+        
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+        
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+        
+        startupProbe:
+          httpGet:
+            path: /health
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 0
+          periodSeconds: 5
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 12
+        
+        volumeMounts:
+        - name: data
+          mountPath: /app/data
+        - name: knowledge
+          mountPath: /app/knowledge
+          readOnly: true
+      
+      terminationGracePeriodSeconds: 30
+      restartPolicy: Always
+      
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: qna-agent-data-pvc
+      - name: knowledge
+        configMap:
+          name: qna-agent-knowledge
+          defaultMode: 0444

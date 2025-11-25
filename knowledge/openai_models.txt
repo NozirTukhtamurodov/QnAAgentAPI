@@ -1,0 +1,50 @@
+OpenAI's GPT (Generative Pre-trained Transformer) models are large language models capable of understanding and generating human-like text.
+
+Key Capabilities:
+- Natural language understanding and generation
+- Code generation and explanation
+- Translation between languages
+- Summarization and content creation
+- Question answering based on context
+- Function/tool calling for structured interactions
+
+OpenAI API Models:
+- GPT-4 Turbo: Most capable model with 128K context window
+- GPT-4: High intelligence for complex tasks
+- GPT-3.5 Turbo: Fast and efficient for most tasks
+- Embeddings models: For semantic search and similarity
+
+Function/Tool Calling:
+OpenAI models support structured function calling, allowing them to:
+1. Decide when to call a function based on user input
+2. Generate properly formatted function arguments
+3. Process function results and incorporate them into responses
+
+This enables building agents that can:
+- Search databases or knowledge bases
+- Perform calculations
+- Call external APIs
+- Execute custom business logic
+
+Example tool definition:
+```python
+{
+    "type": "function",
+    "function": {
+        "name": "search_knowledge",
+        "description": "Search the knowledge base",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string"}
+            }
+        }
+    }
+}
+```
+
+Best Practices:
+- Use system messages to set behavior
+- Maintain conversation history for context
+- Handle rate limits and errors gracefully
+- Validate and sanitize function call results

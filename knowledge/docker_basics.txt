@@ -1,0 +1,31 @@
+Docker is a platform for developing, shipping, and running applications in containers. Containers are lightweight, standalone, executable packages that include everything needed to run an application: code, runtime, system tools, libraries, and settings.
+
+Key Docker Concepts:
+
+1. **Images**: Read-only templates used to create containers. Built from a Dockerfile.
+
+2. **Containers**: Runnable instances of images. Isolated from other containers and the host system.
+
+3. **Dockerfile**: Text file with instructions to build a Docker image.
+
+4. **Docker Hub**: Public registry for sharing Docker images.
+
+5. **Docker Compose**: Tool for defining and running multi-container applications using YAML files.
+
+Benefits of Docker:
+- Consistency across environments (dev, test, prod)
+- Rapid deployment and scaling
+- Efficient resource utilization
+- Isolation and security
+- Portability across different platforms
+- Version control for infrastructure
+
+Common Docker commands:
+- `docker build`: Build an image from Dockerfile
+- `docker run`: Create and start a container
+- `docker ps`: List running containers
+- `docker stop`: Stop a running container
+- `docker pull`: Download an image from registry
+- `docker push`: Upload an image to registry
+
+Multi-stage builds help create smaller, more efficient Docker images by separating build dependencies from runtime dependencies.

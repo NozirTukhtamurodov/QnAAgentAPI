@@ -1,0 +1,21 @@
+Python is a high-level, interpreted programming language known for its simplicity and readability. 
+
+Key features of Python:
+- Easy to learn and use with clear, readable syntax
+- Dynamically typed with automatic memory management
+- Extensive standard library (batteries included)
+- Cross-platform compatibility (Windows, macOS, Linux)
+- Support for multiple programming paradigms (OOP, functional, procedural)
+- Large ecosystem of third-party packages via PyPI
+- Popular for web development, data science, AI/ML, automation, and scripting
+
+Python was created by Guido van Rossum and first released in 1991. The name comes from the British comedy group Monty Python.
+
+Common Python frameworks:
+- Django and Flask for web development
+- NumPy and Pandas for data analysis
+- TensorFlow and PyTorch for machine learning
+- FastAPI for building APIs
+- Pytest for testing
+
+Python uses indentation to define code blocks instead of curly braces or keywords.
